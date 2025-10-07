@@ -7,6 +7,22 @@ import type {
 	NodeParameterValueType,
 } from 'n8n-workflow';
 import { NodeOperationError } from 'n8n-workflow';
+import { LettaClient } from '@letta-ai/letta-client';
+
+// Mock the Letta SDK
+vi.mock('@letta-ai/letta-client', () => {
+	const mockMessagesCreate = vi.fn();
+	return {
+		LettaClient: vi.fn(() => ({
+			agents: {
+				messages: {
+					create: mockMessagesCreate,
+				},
+			},
+		})),
+		mockMessagesCreate,
+	};
+});
 
 /**
  * E2E tests for the Letta n8n node
@@ -17,6 +33,8 @@ describe('Letta Node E2E', () => {
 	let mockExecuteFunctions: IExecuteFunctions;
 
 	beforeEach(() => {
+		// Reset all mocks before each test
+		vi.clearAllMocks();
 		letta = new Letta();
 
 		const mockNode: INode = {
@@ -104,9 +122,10 @@ describe('Letta Node E2E', () => {
 				apiToken: 'test_token',
 				baseUrl: 'https://api.letta.com',
 			});
-			vi.mocked(mockExecuteFunctions.helpers.httpRequestWithAuthentication).mockResolvedValue(
-				mockResponse,
-			);
+
+			// Mock the SDK client response
+			const mockClient = new LettaClient();
+			vi.mocked(mockClient.agents.messages.create).mockResolvedValue(mockResponse as any);
 
 			// Execute the node
 			const result = await letta.execute.call(mockExecuteFunctions);
@@ -117,23 +136,20 @@ describe('Letta Node E2E', () => {
 			expect(result[0][0].json).toEqual(mockResponse);
 			expect(result[0][0].pairedItem).toEqual({ item: 0 });
 
-			// Verify API call
-			expect(mockExecuteFunctions.helpers.httpRequestWithAuthentication).toHaveBeenCalledWith(
-				'lettaApi',
-				{
-					method: 'POST',
-					url: 'https://api.letta.com/v1/agents/agent_abc123/messages',
-					body: {
-						messages: [
+			// Verify SDK was called with correct parameters
+			expect(mockClient.agents.messages.create).toHaveBeenCalledWith('agent_abc123', {
+				messages: [
+					{
+						role: 'user',
+						content: [
 							{
-								role: 'user',
-								content: 'Hello!',
+								type: 'text',
+								text: 'Hello!',
 							},
 						],
 					},
-					json: true,
-				},
-			);
+				],
+			});
 		});
 
 		it('should send message with additional options', async () => {
@@ -175,34 +191,32 @@ describe('Letta Node E2E', () => {
 				apiToken: 'test_token',
 				baseUrl: 'https://api.letta.com',
 			});
-			vi.mocked(mockExecuteFunctions.helpers.httpRequestWithAuthentication).mockResolvedValue(
-				mockResponse,
-			);
+
+			// Mock the SDK client response
+			const mockClient = new LettaClient();
+			vi.mocked(mockClient.agents.messages.create).mockResolvedValue(mockResponse as any);
 
 			// Execute the node
 			await letta.execute.call(mockExecuteFunctions);
 
-			// Verify the API call includes additional options
-			expect(mockExecuteFunctions.helpers.httpRequestWithAuthentication).toHaveBeenCalledWith(
-				'lettaApi',
-				{
-					method: 'POST',
-					url: 'https://api.letta.com/v1/agents/agent_xyz789/messages',
-					body: {
-						messages: [
+			// Verify the SDK call includes additional options
+			expect(mockClient.agents.messages.create).toHaveBeenCalledWith('agent_xyz789', {
+				messages: [
+					{
+						role: 'user',
+						content: [
 							{
-								role: 'user',
-								content: 'Test with options',
+								type: 'text',
+								text: 'Test with options',
 							},
 						],
-						max_steps: 20,
-						enable_thinking: true,
-						use_assistant_message: false,
-						include_return_message_types: ['internal_monologue', 'reasoning'],
 					},
-					json: true,
-				},
-			);
+				],
+				maxSteps: 20,
+				enableThinking: 'true',
+				useAssistantMessage: false,
+				includeReturnMessageTypes: ['reasoning_message', 'reasoning_message'],
+			});
 		});
 
 		it('should handle multiple input items', async () => {
@@ -228,9 +242,12 @@ describe('Letta Node E2E', () => {
 				apiToken: 'test_token',
 				baseUrl: 'https://api.letta.com',
 			});
-			vi.mocked(mockExecuteFunctions.helpers.httpRequestWithAuthentication)
-				.mockResolvedValueOnce(mockResponse1)
-				.mockResolvedValueOnce(mockResponse2);
+
+			// Mock the SDK client response for multiple calls
+			const mockClient = new LettaClient();
+			vi.mocked(mockClient.agents.messages.create)
+				.mockResolvedValueOnce(mockResponse1 as any)
+				.mockResolvedValueOnce(mockResponse2 as any);
 
 			// Execute the node
 			const result = await letta.execute.call(mockExecuteFunctions);
@@ -243,8 +260,8 @@ describe('Letta Node E2E', () => {
 			expect(result[0][1].json).toEqual(mockResponse2);
 			expect(result[0][1].pairedItem).toEqual({ item: 1 });
 
-			// Verify API was called twice
-			expect(mockExecuteFunctions.helpers.httpRequestWithAuthentication).toHaveBeenCalledTimes(2);
+			// Verify SDK was called twice
+			expect(mockClient.agents.messages.create).toHaveBeenCalledTimes(2);
 		});
 
 		it('should handle API errors and throw NodeOperationError', async () => {
@@ -269,9 +286,10 @@ describe('Letta Node E2E', () => {
 				apiToken: 'invalid_token',
 				baseUrl: 'https://api.letta.com',
 			});
-			vi.mocked(mockExecuteFunctions.helpers.httpRequestWithAuthentication).mockRejectedValue(
-				apiError,
-			);
+
+			// Mock SDK to throw error
+			const mockClient = new LettaClient();
+			vi.mocked(mockClient.agents.messages.create).mockRejectedValue(apiError);
 
 			// Execute and expect error
 			await expect(letta.execute.call(mockExecuteFunctions)).rejects.toThrow(NodeOperationError);
@@ -300,9 +318,10 @@ describe('Letta Node E2E', () => {
 				apiToken: 'test_token',
 				baseUrl: 'https://api.letta.com',
 			});
-			vi.mocked(mockExecuteFunctions.helpers.httpRequestWithAuthentication).mockRejectedValue(
-				apiError,
-			);
+
+			// Mock SDK to throw error
+			const mockClient = new LettaClient();
+			vi.mocked(mockClient.agents.messages.create).mockRejectedValue(apiError);
 
 			// Execute the node
 			const result = await letta.execute.call(mockExecuteFunctions);
