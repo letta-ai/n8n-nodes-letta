@@ -1,4 +1,6 @@
 # n8n-nodes-letta
+**This project is in PREVIEW and has not been officially released, try it out and create issues**
+
 
 This is the official n8n node that allows you to integrate [Letta](https://letta.com) AI agents into your n8n workflows.
 

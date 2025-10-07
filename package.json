@@ -1,5 +1,5 @@
 {
-  "name": "@letta/n8n-nodes-letta",
+  "name": "@letta-ai/n8n-nodes-letta",
   "version": "0.0.0",
   "description": "Official n8n node for integrating with Letta AI agent platform",
   "keywords": [

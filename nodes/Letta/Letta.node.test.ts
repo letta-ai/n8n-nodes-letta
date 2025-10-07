@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Letta } from './Letta.node';
-import type { IExecuteFunctions, INodeExecutionData, INode } from 'n8n-workflow';
+import type { IExecuteFunctions, INodeExecutionData, INode, NodeParameterValueType } from 'n8n-workflow';
 import { NodeOperationError } from 'n8n-workflow';
 
 /**
@@ -15,6 +15,7 @@ describe('Letta Node E2E', () => {
 		letta = new Letta();
 
 		const mockNode: INode = {
+			id: 'test-node-id',
 			name: 'Letta',
 			type: 'n8n-nodes-base.letta',
 			typeVersion: 1,
@@ -85,8 +86,8 @@ describe('Letta Node E2E', () => {
 			// Setup mocks
 			vi.mocked(mockExecuteFunctions.getInputData).mockReturnValue(inputData);
 			vi.mocked(mockExecuteFunctions.getNodeParameter)
-				.mockImplementation((paramName: string, index: number) => {
-					const params: Record<string, unknown> = {
+				.mockImplementation((paramName: string): NodeParameterValueType => {
+					const params: Record<string, NodeParameterValueType> = {
 						operation: 'sendMessage',
 						agentId: 'agent_abc123',
 						role: 'user',
@@ -147,8 +148,8 @@ describe('Letta Node E2E', () => {
 			// Setup mocks with additional options
 			vi.mocked(mockExecuteFunctions.getInputData).mockReturnValue(inputData);
 			vi.mocked(mockExecuteFunctions.getNodeParameter)
-				.mockImplementation((paramName: string, index: number, defaultValue?: unknown) => {
-					const params: Record<string, unknown> = {
+				.mockImplementation((paramName: string, _itemIndex: number, defaultValue?: NodeParameterValueType): NodeParameterValueType => {
+					const params: Record<string, NodeParameterValueType> = {
 						operation: 'sendMessage',
 						agentId: 'agent_xyz789',
 						role: 'user',
@@ -171,7 +172,7 @@ describe('Letta Node E2E', () => {
 			);
 
 			// Execute the node
-			const result = await letta.execute.call(
+			await letta.execute.call(
 				mockExecuteFunctions,
 			);
 
@@ -208,12 +209,12 @@ describe('Letta Node E2E', () => {
 			// Setup mocks
 			vi.mocked(mockExecuteFunctions.getInputData).mockReturnValue(inputData);
 			vi.mocked(mockExecuteFunctions.getNodeParameter)
-				.mockImplementation((paramName: string, index: number) => {
-					const params: Record<string, unknown> = {
+				.mockImplementation((paramName: string, itemIndex: number): NodeParameterValueType => {
+					const params: Record<string, NodeParameterValueType> = {
 						operation: 'sendMessage',
 						agentId: 'agent_test',
 						role: 'user',
-						message: `Message ${index + 1}`,
+						message: `Message ${itemIndex + 1}`,
 						additionalOptions: {},
 					};
 					return params[paramName];
@@ -252,8 +253,8 @@ describe('Letta Node E2E', () => {
 			// Setup mocks
 			vi.mocked(mockExecuteFunctions.getInputData).mockReturnValue(inputData);
 			vi.mocked(mockExecuteFunctions.getNodeParameter)
-				.mockImplementation((paramName: string, index: number) => {
-					const params: Record<string, unknown> = {
+				.mockImplementation((paramName: string): NodeParameterValueType => {
+					const params: Record<string, NodeParameterValueType> = {
 						operation: 'sendMessage',
 						agentId: 'agent_invalid',
 						role: 'user',
@@ -284,8 +285,8 @@ describe('Letta Node E2E', () => {
 			vi.mocked(mockExecuteFunctions.getInputData).mockReturnValue(inputData);
 			vi.mocked(mockExecuteFunctions.continueOnFail).mockReturnValue(true);
 			vi.mocked(mockExecuteFunctions.getNodeParameter)
-				.mockImplementation((paramName: string, index: number) => {
-					const params: Record<string, unknown> = {
+				.mockImplementation((paramName: string): NodeParameterValueType => {
+					const params: Record<string, NodeParameterValueType> = {
 						operation: 'sendMessage',
 						agentId: 'agent_test',
 						role: 'user',
