@@ -53,7 +53,9 @@ This node requires Letta API credentials:
 
 1. Go to your [Letta dashboard](https://app.letta.com)
 2. Navigate to API settings and generate an API token
-3. In n8n, create new Letta API credentials:
+3. In n8n, create new Letta API credentials by clicking on the "+"
+4. Select "Letta API" as the credential type and click on "Continue".
+5. Fill your credential details:
    - **API Token**: Your Letta API token
    - **Base URL**: `https://api.letta.com` (default) or your self-hosted instance URL
 
