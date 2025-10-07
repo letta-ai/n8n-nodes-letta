@@ -1,3 +1,6 @@
+**This project is in PREVIEW and has not been officially released, try it out and create issues**
+
+
 # n8n-nodes-letta
 
 [![npm version](https://img.shields.io/npm/v/@letta-ai/n8n-nodes-letta.svg)](https://www.npmjs.com/package/@letta-ai/n8n-nodes-letta)
@@ -5,7 +8,6 @@
 [![Test](https://github.com/letta-ai/letta-n8n-node/actions/workflows/test.yml/badge.svg)](https://github.com/letta-ai/letta-n8n-node/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**This project is in PREVIEW and has not been officially released, try it out and create issues**
 
 This is the official n8n node that allows you to integrate [Letta](https://letta.com) AI agents into your n8n workflows.
 
