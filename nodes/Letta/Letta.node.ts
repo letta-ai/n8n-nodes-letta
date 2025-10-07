@@ -204,6 +204,10 @@ export class Letta implements INodeType {
 		for (let i = 0; i < items.length; i++) {
 			try {
 				if (operation === 'sendMessage') {
+					// Get credentials to access baseUrl
+					const credentials = await this.getCredentials('lettaApi');
+					const baseUrl = credentials.baseUrl as string;
+
 					// Get parameters
 					const agentId = this.getNodeParameter('agentId', i) as string;
 					const role = this.getNodeParameter('role', i) as string;
@@ -239,17 +243,20 @@ export class Letta implements INodeType {
 						body.include_return_message_types = additionalOptions.include_return_message_types;
 					}
 
+					
 					// Make API request
 					const response = await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'lettaApi',
 						{
 							method: 'POST',
-							url: `/agents/${agentId}/messages`,
+
+							url: `${baseUrl}/v1/agents/${agentId}/messages`,
 							body,
 							json: true,
 						},
 					);
+
 
 					// Return the response
 					returnData.push({
@@ -261,7 +268,7 @@ export class Letta implements INodeType {
 				if (this.continueOnFail()) {
 					returnData.push({
 						json: {
-							error: error.message,
+							error: typeof error === 'string' ? error : JSON.stringify(error),
 						},
 						pairedItem: { item: i },
 					});

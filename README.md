@@ -6,6 +6,12 @@ This is the official n8n node that allows you to integrate [Letta](https://letta
 
 [Letta](https://letta.com) is a platform for building stateful AI agents with long-term memory.
 
+## Quick Start
+
+**New to this node?** Check out our [5-minute Quick Start Guide](demo/QUICKSTART.md) and [demo workflows](demo/) to get started quickly!
+
+**Developers:** See [DEVELOPMENT.md](DEVELOPMENT.md) for local testing and development setup.
+
 ## Installation
 
 ### Community Node (Recommended)
@@ -75,9 +81,17 @@ The node returns the complete response from the Letta API, including:
 - **stop_reason**: Reason for ending the conversation
 - **usage**: Token and step usage statistics
 
-## Example Workflows
+## Demo Workflows
 
-### Simple Chat with Letta Agent
+We provide ready-to-use example workflows in the [`demo/`](demo/) directory:
+
+1. **[Simple Chat](demo/workflows/simple-chat.json)** - Basic message sending and response handling
+2. **[Webhook Chat API](demo/workflows/webhook-chat.json)** - REST API endpoint for chat applications
+3. **[Scheduled Summary](demo/workflows/scheduled-summary.json)** - Automated daily summaries via email
+
+📚 **[View Full Demo Documentation](demo/README.md)** with detailed setup instructions, usage examples, and best practices.
+
+### Quick Example: Simple Chat
 
 ```
 ┌─────────┐     ┌──────────┐     ┌─────────┐
@@ -85,25 +99,11 @@ The node returns the complete response from the Letta API, including:
 └─────────┘     └──────────┘     └─────────┘
 ```
 
-1. **Webhook/Manual Trigger**: Receives user input
+1. **Manual Trigger**: Click to test
 2. **Letta Node**: Sends message to agent
-   - Agent ID: `agent_abc123`
-   - Role: `user`
-   - Message: `{{$json.message}}`
 3. **Display**: Shows agent response
 
-### Multi-step Agent Interaction
-
-```
-┌─────────┐     ┌──────────┐     ┌──────────┐     ┌─────────┐
-│ Trigger │────▶│  Letta   │────▶│ Process  │────▶│  Store  │
-└─────────┘     └──────────┘     └──────────┘     └─────────┘
-```
-
-1. **Schedule Trigger**: Runs periodically
-2. **Letta Node**: Sends status check to agent
-3. **Process**: Extracts relevant data from response
-4. **Store**: Saves to database
+[Import this workflow](demo/workflows/simple-chat.json)
 
 ## API Reference
 

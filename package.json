@@ -19,9 +19,9 @@
     "type": "git",
     "url": "https://github.com/letta-ai/letta-n8n-node.git"
   },
-  "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && npm run copy:assets",
+    "copy:assets": "cp nodes/Letta/letta.svg dist/nodes/Letta/",
     "dev": "tsc --watch",
     "lint": "eslint nodes credentials --ext .ts",
     "format": "prettier --write \"**/*.ts\"",

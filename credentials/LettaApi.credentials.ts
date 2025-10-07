@@ -33,7 +33,7 @@ export class LettaApi implements ICredentialType {
 			displayName: 'Base URL',
 			name: 'baseUrl',
 			type: 'string',
-			default: 'https://api.letta.com/v1',
+			default: 'https://api.letta.com',
 			required: true,
 			description: 'The base URL for the Letta API. Use the default unless you are using a self-hosted instance.',
 		},
