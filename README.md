@@ -55,7 +55,7 @@ This node requires Letta API credentials:
 2. Navigate to API settings and generate an API token
 3. In n8n, create new Letta API credentials:
    - **API Token**: Your Letta API token
-   - **Base URL**: `https://api.letta.com/v1` (default) or your self-hosted instance URL
+   - **Base URL**: `https://api.letta.com` (default) or your self-hosted instance URL
 
 ## Operations
 
