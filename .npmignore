@@ -1,0 +1,32 @@
+# Source files (only ship compiled dist/)
+nodes/**/*.ts
+credentials/**/*.ts
+tsconfig.json
+
+# Development files
+.eslintrc.js
+.prettierrc.js
+demo/
+test/
+*.test.ts
+*.test.js
+
+# Documentation (keep LICENSE.md and README.md)
+DEVELOPMENT.md
+CONTRIBUTING.md
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Git
+.git/
+.gitignore
+
+# Misc
+.DS_Store
+Thumbs.db
+*.log
