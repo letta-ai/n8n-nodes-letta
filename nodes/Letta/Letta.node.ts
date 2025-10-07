@@ -3,9 +3,9 @@ import {
 	INodeExecutionData,
 	INodeType,
 	INodeTypeDescription,
-	JsonObject,
 	NodeOperationError,
 } from 'n8n-workflow';
+import { sendMessage } from './actions/sendMessage';
 
 /**
  * Letta Node
@@ -197,87 +197,14 @@ export class Letta implements INodeType {
 	 * Execute the node
 	 */
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
-		const items = this.getInputData();
-		const returnData: INodeExecutionData[] = [];
 		const operation = this.getNodeParameter('operation', 0);
 
-		for (let i = 0; i < items.length; i++) {
-			try {
-				if (operation === 'sendMessage') {
-					// Get credentials to access baseUrl
-					const credentials = await this.getCredentials('lettaApi');
-					const baseUrl = credentials.baseUrl as string;
+		let returnData: INodeExecutionData[];
 
-					// Get parameters
-					const agentId = this.getNodeParameter('agentId', i) as string;
-					const role = this.getNodeParameter('role', i) as string;
-					const message = this.getNodeParameter('message', i) as string;
-					const additionalOptions = this.getNodeParameter('additionalOptions', i, {}) as {
-						max_steps?: number;
-						use_assistant_message?: boolean;
-						enable_thinking?: boolean;
-						include_return_message_types?: string[];
-					};
-
-					// Build request body
-					const body: JsonObject = {
-						messages: [
-							{
-								role,
-								content: message,
-							},
-						],
-					};
-
-					// Add optional parameters
-					if (additionalOptions.max_steps !== undefined) {
-						body.max_steps = additionalOptions.max_steps;
-					}
-					if (additionalOptions.use_assistant_message !== undefined) {
-						body.use_assistant_message = additionalOptions.use_assistant_message;
-					}
-					if (additionalOptions.enable_thinking !== undefined) {
-						body.enable_thinking = additionalOptions.enable_thinking;
-					}
-					if (additionalOptions.include_return_message_types?.length) {
-						body.include_return_message_types = additionalOptions.include_return_message_types;
-					}
-
-
-					// Make API request
-					const response = await this.helpers.httpRequestWithAuthentication.call(
-						this,
-						'lettaApi',
-						{
-							method: 'POST',
-
-							url: `${baseUrl}/v1/agents/${agentId}/messages`,
-							body,
-							json: true,
-						},
-					);
-
-
-					// Return the response
-					returnData.push({
-						json: response as JsonObject,
-						pairedItem: { item: i },
-					});
-				}
-			} catch (error) {
-				if (this.continueOnFail()) {
-					returnData.push({
-						json: {
-							error: typeof error === 'string' ? error : JSON.stringify(error),
-						},
-						pairedItem: { item: i },
-					});
-					continue;
-				}
-				throw new NodeOperationError(this.getNode(), error as Error, {
-					itemIndex: i,
-				});
-			}
+		if (operation === 'sendMessage') {
+			returnData = await sendMessage.call(this);
+		} else {
+			throw new NodeOperationError(this.getNode(), `Unknown operation: ${operation}`);
 		}
 
 		return [returnData];

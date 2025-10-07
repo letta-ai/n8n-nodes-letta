@@ -10,14 +10,14 @@
     "agents"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/letta-ai/letta-n8n-node",
+  "homepage": "https://github.com/letta-ai/n8n-nodes-letta",
   "author": {
     "name": "Letta",
     "email": "contact@letta.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/letta-ai/letta-n8n-node.git"
+    "url": "git+https://github.com/letta-ai/n8n-nodes-letta.git"
   },
   "scripts": {
     "build": "tsc && npm run copy:assets",
@@ -25,6 +25,7 @@
     "dev": "tsc --watch",
     "lint": "eslint nodes credentials --ext .ts",
     "format": "prettier --write \"**/*.ts\"",
+    "format:check": "prettier --check \"**/*.ts\"",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
