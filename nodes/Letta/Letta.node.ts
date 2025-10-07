@@ -243,7 +243,7 @@ export class Letta implements INodeType {
 						body.include_return_message_types = additionalOptions.include_return_message_types;
 					}
 
-					
+
 					// Make API request
 					const response = await this.helpers.httpRequestWithAuthentication.call(
 						this,
