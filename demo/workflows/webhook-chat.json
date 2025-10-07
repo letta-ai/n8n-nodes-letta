@@ -1,0 +1,209 @@
+{
+  "name": "Letta Webhook Chat API",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "letta-chat",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        250,
+        300
+      ],
+      "webhookId": "letta-chat"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract message and agent ID from webhook payload\nconst body = $input.item.json.body || {};\n\nreturn {\n  agentId: body.agentId || body.agent_id,\n  message: body.message,\n  role: body.role || 'user'\n};"
+      },
+      "id": "2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e",
+      "name": "Extract Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        470,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "sendMessage",
+        "agentId": "={{ $json.agentId }}",
+        "role": "={{ $json.role }}",
+        "message": "={{ $json.message }}",
+        "additionalOptions": {
+          "max_steps": 10,
+          "use_assistant_message": true
+        }
+      },
+      "id": "3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f",
+      "name": "Letta",
+      "type": "n8n-nodes-letta.letta",
+      "typeVersion": 1,
+      "position": [
+        690,
+        300
+      ],
+      "credentials": {
+        "lettaApi": {
+          "id": "1",
+          "name": "Letta API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format the response for the API consumer\nconst messages = $input.item.json.messages || [];\nconst assistantMessages = messages.filter(msg => msg.role === 'assistant');\n\nreturn {\n  success: true,\n  response: assistantMessages.map(msg => msg.text || msg.content).join('\\n'),\n  messages: assistantMessages,\n  usage: $input.item.json.usage\n};"
+      },
+      "id": "4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9a",
+      "name": "Format Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        910,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "id": "5e6f7a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1130,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Handle errors gracefully\nconst error = $input.item.json.error || 'Unknown error';\n\nreturn {\n  success: false,\n  error: error.message || error\n};"
+      },
+      "id": "6f7a8b9c-0d1e-2f3a-4b5c-6d7e8f9a0b1c",
+      "name": "Error Handler",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        910,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": 500,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "id": "7a8b9c0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d",
+      "name": "Error Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1130,
+        480
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Extract Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Input": {
+      "main": [
+        [
+          {
+            "node": "Letta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Letta": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Handler",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Response": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Handler": {
+      "main": [
+        [
+          {
+            "node": "Error Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-01-07T00:00:00.000Z",
+  "versionId": "1"
+}

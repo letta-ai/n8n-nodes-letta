@@ -1,0 +1,85 @@
+{
+  "name": "Simple Letta Chat",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "8b5e4d7f-1a2b-3c4d-5e6f-7a8b9c0d1e2f",
+      "name": "When clicking 'Test workflow'",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "sendMessage",
+        "agentId": "={{ $json.agentId || 'agent-123' }}",
+        "role": "user",
+        "message": "Hello! Can you help me understand what you can do?",
+        "additionalOptions": {}
+      },
+      "id": "9c6f5e8a-2b3c-4d5e-6f7a-8b9c0d1e2f3a",
+      "name": "Letta",
+      "type": "n8n-nodes-letta.letta",
+      "typeVersion": 1,
+      "position": [
+        470,
+        300
+      ],
+      "credentials": {
+        "lettaApi": {
+          "id": "1",
+          "name": "Letta API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract the assistant's response from Letta\nconst messages = $input.item.json.messages || [];\n\n// Find the assistant message\nconst assistantMessage = messages.find(msg => msg.role === 'assistant');\n\nreturn {\n  response: assistantMessage?.text || 'No response',\n  allMessages: messages,\n  usage: $input.item.json.usage\n};"
+      },
+      "id": "a7d6c5b4-3e2f-4d5c-6b7a-8c9d0e1f2a3b",
+      "name": "Format Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        690,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "When clicking 'Test workflow'": {
+      "main": [
+        [
+          {
+            "node": "Letta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Letta": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-01-07T00:00:00.000Z",
+  "versionId": "1"
+}

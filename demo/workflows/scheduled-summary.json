@@ -1,0 +1,157 @@
+{
+  "name": "Daily Summary with Letta",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * *"
+            }
+          ]
+        }
+      },
+      "id": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get yesterday's date\nconst yesterday = new Date();\nyesterday.setDate(yesterday.getDate() - 1);\n\nreturn {\n  date: yesterday.toISOString().split('T')[0],\n  agentId: 'agent-123'\n};"
+      },
+      "id": "b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e",
+      "name": "Prepare Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        470,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "sendMessage",
+        "agentId": "={{ $json.agentId }}",
+        "role": "user",
+        "message": "Please provide a summary of all our conversations from {{ $json.date }}. Include key topics discussed, decisions made, and any action items.",
+        "additionalOptions": {
+          "max_steps": 15,
+          "enable_thinking": false,
+          "use_assistant_message": true
+        }
+      },
+      "id": "c3d4e5f6-a7b8-9c0d-1e2f-3a4b5c6d7e8f",
+      "name": "Letta",
+      "type": "n8n-nodes-letta.letta",
+      "typeVersion": 1,
+      "position": [
+        690,
+        300
+      ],
+      "credentials": {
+        "lettaApi": {
+          "id": "1",
+          "name": "Letta API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract summary from Letta response\nconst messages = $input.item.json.messages || [];\nconst assistantMessage = messages.find(msg => msg.role === 'assistant');\nconst summary = assistantMessage?.text || assistantMessage?.content || 'No summary available';\n\nreturn {\n  date: $('Prepare Data').item.json.date,\n  summary: summary,\n  timestamp: new Date().toISOString()\n};"
+      },
+      "id": "d4e5f6a7-b8c9-0d1e-2f3a-4b5c6d7e8f9a",
+      "name": "Format Summary",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        910,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "notifications@yourdomain.com",
+        "toEmail": "team@yourdomain.com",
+        "subject": "=Daily Summary - {{ $json.date }}",
+        "emailFormat": "html",
+        "message": "=<h2>Daily Summary for {{ $json.date }}</h2>\n<p>{{ $json.summary }}</p>\n<hr>\n<p><small>Generated at {{ $json.timestamp }}</small></p>",
+        "options": {}
+      },
+      "id": "e5f6a7b8-c9d0-1e2f-3a4b-5c6d7e8f9a0b",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1130,
+        300
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "2",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Prepare Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Data": {
+      "main": [
+        [
+          {
+            "node": "Letta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Letta": {
+      "main": [
+        [
+          {
+            "node": "Format Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Summary": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2025-01-07T00:00:00.000Z",
+  "versionId": "1"
+}
