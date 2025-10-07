@@ -161,7 +161,7 @@ export class Letta implements INodeType {
 						name: 'enable_thinking',
 						type: 'boolean',
 						default: false,
-						description: 'Whether to enable the agent\'s thinking process in the response',
+						description: "Whether to enable the agent's thinking process in the response",
 					},
 					{
 						displayName: 'Return Message Types',

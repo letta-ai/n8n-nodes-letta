@@ -1,4 +1,9 @@
-import { IExecuteFunctions, INodeExecutionData, JsonObject, NodeOperationError } from 'n8n-workflow';
+import {
+	IExecuteFunctions,
+	INodeExecutionData,
+	JsonObject,
+	NodeOperationError,
+} from 'n8n-workflow';
 
 export interface SendMessageOptions {
 	max_steps?: number;

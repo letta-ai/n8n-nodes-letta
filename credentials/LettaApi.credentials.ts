@@ -27,7 +27,8 @@ export class LettaApi implements ICredentialType {
 			},
 			default: '',
 			required: true,
-			description: 'The API token for authenticating with Letta. You can obtain this from your Letta dashboard.',
+			description:
+				'The API token for authenticating with Letta. You can obtain this from your Letta dashboard.',
 		},
 		{
 			displayName: 'Base URL',
@@ -35,7 +36,8 @@ export class LettaApi implements ICredentialType {
 			type: 'string',
 			default: 'https://api.letta.com',
 			required: true,
-			description: 'The base URL for the Letta API. Use the default unless you are using a self-hosted instance.',
+			description:
+				'The base URL for the Letta API. Use the default unless you are using a self-hosted instance.',
 		},
 	];
 
