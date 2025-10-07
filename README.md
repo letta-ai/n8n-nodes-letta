@@ -192,10 +192,3 @@ For issues and questions:
 - **n8n questions**: [n8n community forum](https://community.n8n.io)
 - **Letta questions**: [Letta documentation](https://docs.letta.com)
 
-## Version History
-
-### 0.1.0
-- Initial release
-- Support for sending messages to Letta agents
-- Full TypeScript implementation
-- Comprehensive error handling
