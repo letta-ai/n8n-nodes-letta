@@ -1,6 +1,6 @@
 {
   "name": "@letta/n8n-nodes-letta",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "Official n8n node for integrating with Letta AI agent platform",
   "keywords": [
     "n8n",
@@ -25,6 +25,9 @@
     "dev": "tsc --watch",
     "lint": "eslint nodes credentials --ext .ts",
     "format": "prettier --write \"**/*.ts\"",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
     "prepack": "npm run build"
   },
   "files": [
@@ -40,17 +43,20 @@
     ]
   },
   "devDependencies": {
+    "@types/jest": "^30.0.0",
     "@types/node": "^20.10.0",
     "@typescript-eslint/eslint-plugin": "^6.13.0",
     "@typescript-eslint/parser": "^6.13.0",
+    "@vitest/ui": "^3.2.4",
     "eslint": "^8.54.0",
     "eslint-config-prettier": "^9.0.0",
+    "n8n-core": "^1.114.0",
     "n8n-workflow": "^1.0.0",
     "prettier": "^3.1.0",
-    "typescript": "^5.3.0"
+    "typescript": "^5.3.0",
+    "vitest": "^3.2.4"
   },
   "peerDependencies": {
     "n8n-workflow": "*"
-  },
-  "dependencies": {}
+  }
 }
