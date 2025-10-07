@@ -1,6 +1,11 @@
 # n8n-nodes-letta
-**This project is in PREVIEW and has not been officially released, try it out and create issues**
 
+[![npm version](https://img.shields.io/npm/v/@letta-ai/n8n-nodes-letta.svg)](https://www.npmjs.com/package/@letta-ai/n8n-nodes-letta)
+[![npm downloads](https://img.shields.io/npm/dm/@letta-ai/n8n-nodes-letta.svg)](https://www.npmjs.com/package/@letta-ai/n8n-nodes-letta)
+[![Test](https://github.com/letta-ai/letta-n8n-node/actions/workflows/test.yml/badge.svg)](https://github.com/letta-ai/letta-n8n-node/actions/workflows/test.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+**This project is in PREVIEW and has not been officially released, try it out and create issues**
 
 This is the official n8n node that allows you to integrate [Letta](https://letta.com) AI agents into your n8n workflows.
 
@@ -20,7 +25,7 @@ This is the official n8n node that allows you to integrate [Letta](https://letta
 
 1. Go to **Settings** > **Community Nodes** in your n8n instance
 2. Select **Install**
-3. Enter `@letta/n8n-nodes-letta` in **Enter npm package name**
+3. Enter `@letta-ai/n8n-nodes-letta` in **Enter npm package name**
 4. Agree to the risks of using community nodes
 5. Select **Install**
 
@@ -29,13 +34,13 @@ This is the official n8n node that allows you to integrate [Letta](https://letta
 To get started install the package in your n8n root directory:
 
 ```bash
-npm install @letta/n8n-nodes-letta
+npm install @letta-ai/n8n-nodes-letta
 ```
 
 For Docker-based n8n installations, add the following line before the `$N8N_CUSTOM_EXTENSIONS` variable in your `.env` file:
 
 ```env
-N8N_CUSTOM_EXTENSIONS=@letta/n8n-nodes-letta
+N8N_CUSTOM_EXTENSIONS=@letta-ai/n8n-nodes-letta
 ```
 
 ## Configuration
@@ -167,7 +172,7 @@ To test your changes locally:
 
 1. Build the node: `npm run build`
 2. Link to your n8n installation: `npm link`
-3. In your n8n directory: `npm link @shub/n8n-nodes-letta`
+3. In your n8n directory: `npm link @letta-ai/n8n-nodes-letta`
 4. Restart n8n
 
 ## Contributing
