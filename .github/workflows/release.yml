@@ -32,7 +32,8 @@ jobs:
         run: npm ci
 
       - name: Bump version
-        run: npm version patch -m "chore: release v%s [skip ci]"
+        run: |
+          npm version patch -m "chore: release v%s [skip ci]"
 
       - name: Build
         run: npm run build
