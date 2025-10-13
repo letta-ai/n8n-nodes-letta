@@ -22,7 +22,7 @@
       },
       "id": "9c6f5e8a-2b3c-4d5e-6f7a-8b9c0d1e2f3a",
       "name": "Letta",
-      "type": "n8n-nodes-letta.letta",
+      "type": "@letta-ai/n8n-nodes-letta.letta",
       "typeVersion": 1,
       "position": [
         470,
