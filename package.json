@@ -61,6 +61,6 @@
     "n8n-workflow": "*"
   },
   "dependencies": {
-    "@letta-ai/letta-client": "^0.0.68664"
+    "@letta-ai/letta-client": "^0.0.68665"
   }
 }
